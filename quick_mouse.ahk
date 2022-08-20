@@ -3,7 +3,7 @@
 ; quick_mouse
 ;
 ; Reinhardt
-; 2022.819.9
+; 2022.820.0
 
 global INSERT_MODE := false
 global NORMAL_MODE := false
@@ -20,11 +20,11 @@ Accelerate(velocity, pos, neg) {
     If (pos == 0 && neg == 0) {
         Return 0
     }
-    ; smooth deceleration :)
+    ; Smooth declaration
     Else If (pos + neg == 0) {
         Return velocity * 0.666
     }
-    ; physicszzzzz
+    ; Apply physics /(ㄒoㄒ)/~~
     Else {
         Return velocity * RESISTANCE + FORCE * (pos + neg)
     }
@@ -50,7 +50,7 @@ MoveCursor() {
     VELOCITY_X := Accelerate(VELOCITY_X, LEFT, RIGHT)
     VELOCITY_Y := Accelerate(VELOCITY_Y, UP, DOWN)
 
-    RestoreDPI:=DllCall("SetThreadDpiAwarenessContext","ptr",-3,"ptr") ; enable per-monitor DPI awareness
+    RestoreDPI:=DllCall("SetThreadDpiAwarenessContext","ptr",-3,"ptr") ; Enable per-monitor DPI awareness
 
     MouseMove, %VELOCITY_X%, %VELOCITY_Y%, 0, R
 }
@@ -85,7 +85,6 @@ Yank() {
     WinGetPos,wx,wy,width,,A
     center := wx + width - 180
     y := wy + 12
-    ;MsgBox, Hello %width% %center%
     MouseMove, center, y
     Drag()
 }
@@ -104,21 +103,6 @@ MouseRight() {
 
 MouseMiddle() {
     Click, Middle
-}
-
-JumpMiddle() {
-    CoordMode, Mouse, Screen
-    MouseMove, (A_ScreenWidth // 2), (A_ScreenHeight // 2)
-}
-
-JumpMiddle2() {
-    CoordMode, Mouse, Screen
-    MouseMove, (A_ScreenWidth + A_ScreenWidth // 2), (A_ScreenHeight // 2)
-}
-
-JumpMiddle3() {
-    CoordMode, Mouse, Screen
-    MouseMove, (A_ScreenWidth * 2 + A_ScreenWidth // 2), (A_ScreenHeight // 2)
 }
 
 MouseCtrlClick() {
