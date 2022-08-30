@@ -8,14 +8,13 @@ Click [Here](https://github.com/reinhello/quick_mouse/releases/latest/download/q
 
 # How to Use
 
-There are two modes available which each mode represents and behave differently. `Normal Mode` allows your keyboard to move the mouse around while `Insert Mode` allows you to type regularly like a normal keyboard.
+There are two modes available which each mode will represents a different control. See below for more:
 
 ## Controls
 
 ## Mode
 
-- `Pause` - Enter `Normal` mode. You are able to move the cursor around
-- `Insert` - Enter `Insert` mode. You are able to use your keyboard regularly.
+- `Pause` - Switch between modes. Each mode behaves to control the cursor and other to acts like a regular keyboard.
 
 ### Cursor
 
@@ -47,6 +46,8 @@ There are two modes available which each mode represents and behave differently.
 - `Shift+S` - Position the cursor bottom of the screen
 - `Shift+D` - Position the cursor right side of the screen
 - `Shift+Y` - Yank the mouse
+
+- **Custom hotkeys are not supported in the meantime.**
 
 ## Contributing
 
