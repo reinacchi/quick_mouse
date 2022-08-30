@@ -14,7 +14,8 @@ There are two modes available which each mode will represents a different contro
 
 ## Mode
 
-- `Pause` - Switch between modes. Each mode behaves to control the cursor and other to acts like a regular keyboard.
+- `Alt+K` - Switch mode to **Normal Mode**. This allows you to control the cursor with your keyboard.
+- `Alt+L` - Switch mode to **Insert Mode**. This allows you to type reguarly with your keyboard.
 
 ### Cursor
 
