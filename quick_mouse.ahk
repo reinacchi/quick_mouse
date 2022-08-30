@@ -3,10 +3,10 @@
 ; quick_mouse
 ;
 ; Reinhardt
-; 2022.820.0
+; 2022.830.0
 
-global INSERT_MODE := false
-global NORMAL_MODE := false
+global INSERT_MODE := False
+global NORMAL_MODE := False
 
 global FORCE := 1.8
 global RESISTANCE := 0.982
@@ -14,7 +14,7 @@ global RESISTANCE := 0.982
 global VELOCITY_X := 0
 global VELOCITY_Y := 0
 
-EnterNormalMode()
+SwitchMode(True)
 
 Accelerate(velocity, pos, neg) {
     If (pos == 0 && neg == 0) {
@@ -41,7 +41,7 @@ MoveCursor() {
     UP := UP - GetKeyState("w", "P")
     RIGHT := RIGHT + GetKeyState("d", "P")
 
-    If (NORMAL_MODE == false) {
+    If (NORMAL_MODE == False) {
         VELOCITY_X := 0
         VELOCITY_Y := 0
         SetTimer,, Off
@@ -55,23 +55,28 @@ MoveCursor() {
     MouseMove, %VELOCITY_X%, %VELOCITY_Y%, 0, R
 }
 
-EnterNormalMode(quick:=false) {
-    If (NORMAL_MODE) {
-        Return
+SwitchMode(init=False) {
+    If (init == True) {
+        NORMAL_MODE := True
+        INSERT_MODE := False
+
+        SetTimer, MoveCursor, 16
+    } Else {
+        If (NORMAL_MODE) {
+            NORMAL_MODE := False
+            INSERT_MODE := True
+
+            Return
+        }
+
+        If (INSERT_MODE) {
+            NORMAL_MODE := True
+            INSERT_MODE := False
+
+            SetTimer, MoveCursor, 16
+        }
     }
-    NORMAL_MODE := true
-    INSERT_MODE := false
 
-    SetTimer, MoveCursor, 16
-}
-
-EnterInsertMode(quick:=false) {
-    If (INSERT_MODE) {
-        Return
-    }
-
-    INSERT_MODE := true
-    NORMAL_MODE := false
 }
 
 Drag() {
@@ -148,14 +153,6 @@ JumpRightEdge() {
     MouseMove, x,y
 }
 
-MouseBack() {
-    Click, X1
-}
-
-MouseForward() {
-    Click, X2
-}
-
 ScrollUp() {
     Click, WheelUp
 }
@@ -172,31 +169,7 @@ ScrollLeft() {
     Click, WheelLeft
 }
 
-ScrollUpMore() {
-    Click, WheelUp
-    Click, WheelUp
-    Click, WheelUp
-    Click, WheelUp
-    Return
-}
-
-ScrollDownMore() {
-    Click, WheelDown
-    Click, WheelDown
-    Click, WheelDown
-    Click, WheelDown
-    Return
-}
-
-Break:: EnterNormalMode()
-Insert:: EnterInsertMode()
-<#<!n:: EnterNormalMode()
-<#<!i:: EnterInsertMode()
-
-+Break:: Send, {Break}
-+Insert:: Send, {Insert}
-^Capslock:: Send, {Capslock}
-^+Capslock:: SetCapsLockState, Off
+Break:: SwitchMode()
 
 #If (NORMAL_MODE)
 w:: Return
@@ -212,8 +185,8 @@ e:: MouseLeft()
 q:: MouseRight()
 r:: MouseMiddle()
 +Y:: Yank()
-*n:: Drag()
-*m:: RightDrag()
+n:: Drag()
+m:: RightDrag()
 i:: ScrollUp()
 j:: ScrollLeft()
 k:: ScrollDown()
