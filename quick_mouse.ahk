@@ -55,25 +55,25 @@ MoveCursor() {
     MouseMove, %VELOCITY_X%, %VELOCITY_Y%, 0, R
 }
 
-SwitchMode(init=False) {
+SwitchMode(init=False, normal=False) {
     If (init == True) {
         NORMAL_MODE := True
         INSERT_MODE := False
 
         SetTimer, MoveCursor, 16
     } Else {
-        If (NORMAL_MODE) {
-            NORMAL_MODE := False
-            INSERT_MODE := True
-
-            Return
-        }
-
-        If (INSERT_MODE) {
+        If (normal == True) {
             NORMAL_MODE := True
             INSERT_MODE := False
 
             SetTimer, MoveCursor, 16
+        }
+
+        If (normal == False) {
+            NORMAL_MODE := False
+            INSERT_MODE := True
+
+            Return
         }
     }
 
@@ -169,7 +169,8 @@ ScrollLeft() {
     Click, WheelLeft
 }
 
-Break:: SwitchMode()
+!o:: SwitchMode(False, True)
+!p:: SwitchMode(False, False)
 
 #If (NORMAL_MODE)
 w:: Return
