@@ -14,8 +14,8 @@ There are two modes available which each mode will represents a different contro
 
 ## Mode
 
-- `Alt+K` - Switch mode to **Normal Mode**. This allows you to control the cursor with your keyboard.
-- `Alt+L` - Switch mode to **Insert Mode**. This allows you to type reguarly with your keyboard.
+- `Shift+Alt+K` - Switch mode to **Normal Mode**. This allows you to control the cursor with your keyboard.
+- `Shift+Alt+L` - Switch mode to **Insert Mode**. This allows you to type reguarly with your keyboard.
 
 ### Cursor
 

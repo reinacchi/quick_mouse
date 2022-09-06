@@ -169,8 +169,8 @@ ScrollLeft() {
     Click, WheelLeft
 }
 
-!k:: SwitchMode(False, True)
-!l:: SwitchMode(False, False)
++!k:: SwitchMode(False, True)
++!l:: SwitchMode(False, False)
 
 #If (NORMAL_MODE)
 w:: Return
