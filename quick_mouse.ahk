@@ -3,10 +3,11 @@
 ; quick_mouse
 ;
 ; Reinhardt
-; 2022.830.0
+; 2022.922.0
 
 global INSERT_MODE := False
 global NORMAL_MODE := False
+global FAST_MODE := False
 
 global FORCE := 1.8
 global RESISTANCE := 0.982
@@ -77,6 +78,20 @@ SwitchMode(init=False, normal=False) {
         }
     }
 
+}
+
+EnableFast(fast=False) {
+    If (fast == True) {
+        FAST_MODE := True
+        FORCE := 3.6
+        RESISTANCE := 0.96
+    } Else {
+        FAST_MODE := False
+        FORCE := 1.8
+        RESISTANCE := 0.982
+    }
+
+    Return
 }
 
 Drag() {
@@ -171,6 +186,8 @@ ScrollLeft() {
 
 +!k:: SwitchMode(False, True)
 +!l:: SwitchMode(False, False)
++!o:: EnableFast(True)
++!p:: EnableFast(False)
 
 #If (NORMAL_MODE)
 w:: Return
