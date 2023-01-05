@@ -14,8 +14,8 @@ There are two modes available which each mode will represents a different contro
 
 ## Mode
 
-- `Shift+Alt+K` - Switch mode to **Normal Mode**. This allows you to control the cursor with your keyboard.
-- `Shift+Alt+L` - Switch mode to **Insert Mode**. This allows you to type reguarly with your keyboard.
+- `Shift+Alt+K` - Switch mode to **Control Mode**. This allows you to control the cursor with your keyboard.
+- `Shift+Alt+L` - Switch mode to **Regular Mode**. This allows you to type reguarly with your keyboard.
 - `Shift+Alt+O` - Allows your cursor to move slightly faster than default
 - `Shift+Alt+P` - Allows your cursor to move in a normal speed. This is the default settings.
 
@@ -44,10 +44,10 @@ There are two modes available which each mode will represents a different contro
 ### Misc
 
 - `End` - Release any click. If you are dragging or selecting a text, use this key to release them.
-- `Shift+W` - Position the cursor top of the screen
-- `Shift+A` - Position the cursor left side of the screen
-- `Shift+S` - Position the cursor bottom of the screen
-- `Shift+D` - Position the cursor right side of the screen
+- `Shift+W` - Move the cursor top of the screen
+- `Shift+A` - Move the cursor left side of the screen
+- `Shift+S` - Move the cursor bottom of the screen
+- `Shift+D` - Move the cursor right side of the screen
 - `Shift+Y` - Yank the mouse
 
 - **Custom hotkeys are not supported in the meantime.**
