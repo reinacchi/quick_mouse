@@ -83,8 +83,8 @@ SwitchMode(init=False, normal=False) {
 EnableFast(fast=False) {
     If (fast == True) {
         FAST_MODE := True
-        FORCE := 3.6
-        RESISTANCE := 0.96
+        FORCE := 3.85
+        RESISTANCE := 1
     } Else {
         FAST_MODE := False
         FORCE := 1.8
