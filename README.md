@@ -43,7 +43,7 @@ There are two modes available which each mode will represents a different contro
 
 ### Misc
 
-- `End` - Release any click. If you are dragging or selecting a text, use this key to release them.
+- `B` - Release any click. If you are dragging or selecting a text, use this key to release them.
 - `Shift+W` - Move the cursor top of the screen
 - `Shift+A` - Move the cursor left side of the screen
 - `Shift+S` - Move the cursor bottom of the screen
