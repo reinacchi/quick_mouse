@@ -209,4 +209,4 @@ i:: ScrollUp()
 j:: ScrollLeft()
 k:: ScrollDown()
 l:: ScrollRight()
-End:: Click, Up
+b:: Click, Up
