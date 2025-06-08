@@ -1,111 +1,95 @@
 #InstallKeybdHook
+#SingleInstance Force
+#NoEnv
+SetWorkingDir %A_ScriptDir%
+SetMouseDelay, -1
+SetKeyDelay, -1
 
-; quick_mouse
-;
-; Reinhardt
-; 2022.922.0
-
-global INSERT_MODE := False
-global NORMAL_MODE := False
+; Configuration
+global MOUSE_MODE := "NORMAL" ; "NORMAL", "INSERT", or "OFF"
 global FAST_MODE := False
-
-global FORCE := 1.8
-global RESISTANCE := 0.982
+global ACCELERATION := 3.275    ; Base acceleration force
+global FRICTION := 0.8      ; Velocity decay per tick
+global MAX_VELOCITY := 50     ; Cap on velocity to prevent overshooting
+global SENSITIVITY := 0.8    ; Mouse movement sensitivity
+global TICK_RATE := 8         ; Timer interval in ms (125 Hz)
 
 global VELOCITY_X := 0
 global VELOCITY_Y := 0
 
+; Initialize
 SwitchMode(True)
 
 Accelerate(velocity, pos, neg) {
-    If (pos == 0 && neg == 0) {
-        Return 0
+    input := pos + neg
+    if (input == 0) {
+        ; Apply friction when no input
+        return velocity * 0.4
     }
-    ; Smooth declaration
-    Else If (pos + neg == 0) {
-        Return velocity * 0.666
-    }
-    ; Apply physics /(ㄒoㄒ)/~~
-    Else {
-        Return velocity * RESISTANCE + FORCE * (pos + neg)
-    }
+    ; Calculate new velocity with acceleration
+    new_velocity := velocity * FRICTION + ACCELERATION * input * SENSITIVITY
+    ; Clamp velocity to prevent runaway
+    return Clamp(new_velocity, -MAX_VELOCITY, MAX_VELOCITY)
+}
+
+Clamp(value, min_val, max_val) {
+    return Min(Max(value, min_val), max_val)
 }
 
 MoveCursor() {
-    LEFT := 0
-    DOWN := 0
-    UP := 0
-    RIGHT := 0
-
-    LEFT := LEFT - GetKeyState("a", "P")
-    DOWN := DOWN + GetKeyState("s", "P")
-    UP := UP - GetKeyState("w", "P")
-    RIGHT := RIGHT + GetKeyState("d", "P")
-
-    If (NORMAL_MODE == False) {
+    if (MOUSE_MODE != "NORMAL") {
         VELOCITY_X := 0
         VELOCITY_Y := 0
         SetTimer,, Off
+        return
     }
 
-    VELOCITY_X := Accelerate(VELOCITY_X, LEFT, RIGHT)
-    VELOCITY_Y := Accelerate(VELOCITY_Y, UP, DOWN)
+    ; Read input states
+    left := GetKeyState("a", "P") ? -1 : 0
+    right := GetKeyState("d", "P") ? 1 : 0
+    up := GetKeyState("w", "P") ? -1 : 0
+    down := GetKeyState("s", "P") ? 1 : 0
 
-    RestoreDPI:=DllCall("SetThreadDpiAwarenessContext","ptr",-3,"ptr") ; Enable per-monitor DPI awareness
+    ; Update velocities
+    VELOCITY_X := Accelerate(VELOCITY_X, left, right)
+    VELOCITY_Y := Accelerate(VELOCITY_Y, up, down)
 
-    MouseMove, %VELOCITY_X%, %VELOCITY_Y%, 0, R
+    ; Apply DPI awareness for consistent movement across monitors
+    DllCall("SetThreadDpiAwarenessContext", "ptr", -3)
+
+    ; Move mouse with rounded velocities for smoother motion
+    MouseMove, % Round(VELOCITY_X), % Round(VELOCITY_Y), 0, R
 }
 
-SwitchMode(init=False, normal=False) {
-    If (init == True) {
-        NORMAL_MODE := True
-        INSERT_MODE := False
-
-        SetTimer, MoveCursor, 16
-    } Else {
-        If (normal == True) {
-            NORMAL_MODE := True
-            INSERT_MODE := False
-
-            SetTimer, MoveCursor, 16
-        }
-
-        If (normal == False) {
-            NORMAL_MODE := False
-            INSERT_MODE := True
-
-            Return
-        }
+; Switch between modes
+SwitchMode(init:=False, normal:=False) {
+    if (init || normal) {
+        MOUSE_MODE := "NORMAL"
+        SetTimer, MoveCursor, %TICK_RATE%
+    } else {
+        MOUSE_MODE := "INSERT"
+        SetTimer, MoveCursor, Off
     }
-
 }
 
-EnableFast(fast=False) {
-    If (fast == True) {
-        FAST_MODE := True
-        FORCE := 3.85
-        RESISTANCE := 1
-    } Else {
-        FAST_MODE := False
-        FORCE := 1.8
-        RESISTANCE := 0.982
-    }
-
-    Return
+; Toggle fast mode
+EnableFast(fast:=False) {
+    FAST_MODE := fast
+    ACCELERATION := fast ? 3.0 : 1.0
+    FRICTION := fast ? 0.8 : 0.4
+    SENSITIVITY := fast ? 0.8 : 0.4
 }
 
+; Mouse actions
 Drag() {
     Click, Down
 }
 
 Yank() {
-    wx := 0
-    wy := 0
-    width := 0
-    WinGetPos,wx,wy,width,,A
+    WinGetPos, wx, wy, width,, A
     center := wx + width - 180
     y := wy + 12
-    MouseMove, center, y
+    MouseMove, %center%, %y%, 0
     Drag()
 }
 
@@ -126,48 +110,46 @@ MouseMiddle() {
 }
 
 MouseCtrlClick() {
-    Send, {Ctrl Down}{Click}{Ctrl Up}
+    Send {Ctrl Down}
+    Click
+    Send {Ctrl Up}
 }
 
+; Monitor edge detection
 MonitorLeftEdge() {
-    mx := 0
     CoordMode, Mouse, Screen
     MouseGetPos, mx
-    monitor := (mx // A_ScreenWidth)
-
-    return monitor * A_ScreenWidth
+    return (mx // A_ScreenWidth) * A_ScreenWidth
 }
 
+; Jump to screen edges
 JumpLeftEdge() {
-    x := MonitorLeftEdge() + 2
-    y := 0
     CoordMode, Mouse, Screen
-    MouseGetPos,,y
-    MouseMove, x,y
+    MouseGetPos,, y
+    x := MonitorLeftEdge() + 2
+    MouseMove, %x%, %y%, 0
 }
 
 JumpBottomEdge() {
-    x := 0
     CoordMode, Mouse, Screen
     MouseGetPos, x
-    MouseMove, x,(A_ScreenHeight - 0)
+    MouseMove, %x%, % A_ScreenHeight - 2, 0
 }
 
 JumpTopEdge() {
-    x := 0
     CoordMode, Mouse, Screen
     MouseGetPos, x
-    MouseMove, x,0
+    MouseMove, %x%, 0, 0
 }
 
 JumpRightEdge() {
-    x := MonitorLeftEdge() + A_ScreenWidth - 2
-    y := 0
     CoordMode, Mouse, Screen
-    MouseGetPos,,y
-    MouseMove, x,y
+    MouseGetPos,, y
+    x := MonitorLeftEdge() + A_ScreenWidth - 2
+    MouseMove, %x%, %y%, 0
 }
 
+; Scroll actions
 ScrollUp() {
     Click, WheelUp
 }
@@ -184,12 +166,13 @@ ScrollLeft() {
     Click, WheelLeft
 }
 
-+!k:: SwitchMode(False, True)
-+!l:: SwitchMode(False, False)
-+!o:: EnableFast(True)
-+!p:: EnableFast(False)
+; Hotkeys
++!k:: SwitchMode(False, True)  ; Normal mode
++!l:: SwitchMode(False, False) ; Insert mode
++!o:: EnableFast(True)         ; Fast mode on
++!p:: EnableFast(False)        ; Fast mode off
 
-#If (NORMAL_MODE)
+#If (MOUSE_MODE == "NORMAL")
 w:: Return
 a:: Return
 s:: Return
@@ -210,3 +193,4 @@ j:: ScrollLeft()
 k:: ScrollDown()
 l:: ScrollRight()
 b:: Click, Up
+#If
