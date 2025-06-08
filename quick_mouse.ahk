@@ -8,7 +8,7 @@ SetKeyDelay, -1
 ; Configuration
 global MOUSE_MODE := "NORMAL" ; "NORMAL", "INSERT", or "OFF"
 global FAST_MODE := False
-global ACCELERATION := 3.0    ; Base acceleration force
+global ACCELERATION := 3.275    ; Base acceleration force
 global FRICTION := 0.8      ; Velocity decay per tick
 global MAX_VELOCITY := 50     ; Cap on velocity to prevent overshooting
 global SENSITIVITY := 0.8    ; Mouse movement sensitivity
@@ -24,7 +24,7 @@ Accelerate(velocity, pos, neg) {
     input := pos + neg
     if (input == 0) {
         ; Apply friction when no input
-        return velocity * FRICTION
+        return velocity * 0.4
     }
     ; Calculate new velocity with acceleration
     new_velocity := velocity * FRICTION + ACCELERATION * input * SENSITIVITY
